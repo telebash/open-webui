@@ -6,7 +6,7 @@
 	import { page } from '$app/stores';
 
 	import { getBackendConfig } from '$lib/apis';
-	import { ldapUserSignIn, getSessionUser, userSignIn, userSignUp } from '$lib/apis/auths';
+	import { ldapUserSignIn, getSessionUser, userSignIn, userSignUp, userSignInAnonymous } from '$lib/apis/auths';
 
 	import { WEBUI_API_BASE_URL, WEBUI_BASE_URL } from '$lib/constants';
 	import { WEBUI_NAME, config, user, socket } from '$lib/stores';
@@ -19,6 +19,7 @@
 	const i18n = getContext('i18n');
 
 	let loaded = false;
+	let hasSecretAuth = false;
 
 	let mode = $config?.features.enable_ldap ? 'ldap' : 'signin';
 
@@ -49,6 +50,15 @@
 			const redirectPath = querystringValue('redirect') || '/';
 			goto(redirectPath);
 		}
+	};
+
+	const signInAnonymousHandler = async () => {
+		const sessionUser = await userSignInAnonymous().catch((error) => {
+			toast.error(`${error}`);
+			return null;
+		});
+
+		await setSessionUser(sessionUser);
 	};
 
 	const signInHandler = async () => {
@@ -144,13 +154,18 @@
 		}
 		await checkOauthCallback();
 
+		const urlSearchParams = new URLSearchParams(window.location.search);
+		hasSecretAuth = urlSearchParams.get('secret_auth') === 'true';
+
 		loaded = true;
 		setLogoImage();
 
-		if (($config?.features.auth_trusted_header ?? false) || $config?.features.auth === false) {
+		if (hasSecretAuth) {
+		// if (($config?.features.auth_trusted_header ?? false) || $config?.features.auth === false) {
 			await signInHandler();
 		} else {
-			onboarding = $config?.onboarding ?? false;
+			// onboarding = $config?.onboarding ?? false;
+			await signInAnonymousHandler();
 		}
 	});
 </script>
@@ -193,7 +208,7 @@
 			class="fixed bg-transparent min-h-screen w-full flex justify-center font-primary z-50 text-black dark:text-white"
 		>
 			<div class="w-full sm:max-w-md px-10 min-h-screen flex flex-col text-center">
-				{#if ($config?.features.auth_trusted_header ?? false) || $config?.features.auth === false}
+				{#if ($config?.features.auth_trusted_header ?? false) || $config?.features.auth === false || hasSecretAuth === true}
 					<div class=" my-auto pb-10 w-full">
 						<div
 							class="flex items-center justify-center gap-3 text-xl sm:text-2xl text-center font-semibold dark:text-gray-200"

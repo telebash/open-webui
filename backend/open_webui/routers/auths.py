@@ -32,6 +32,7 @@ from open_webui.env import (
 from fastapi import APIRouter, Depends, HTTPException, Request, status
 from fastapi.responses import RedirectResponse, Response
 from open_webui.config import OPENID_PROVIDER_URL, ENABLE_OAUTH_SIGNUP, ENABLE_LDAP
+from open_webui.utils.creds import generate_random_credentials
 from pydantic import BaseModel
 from open_webui.utils.misc import parse_duration, validate_email_format
 from open_webui.utils.auth import (
@@ -413,6 +414,61 @@ async def signin(request: Request, response: Response, form_data: SigninForm):
         raise HTTPException(400, detail=ERROR_MESSAGES.INVALID_CRED)
 
 
+@router.post("/signin/anonymous")
+async def signin_anonymous(request: Request, response: Response):
+    email, password = generate_random_credentials()
+    await signup(
+        request,
+        response,
+        SignupForm(email=email, password=password, name="Anonymous"),
+    )
+
+    user = Auths.authenticate_user(email.lower(), password)
+    if user:
+        expires_delta = parse_duration('-1')
+        expires_at = None
+        if expires_delta:
+            expires_at = int(time.time()) + int(expires_delta.total_seconds())
+
+        token = create_token(
+            data={"id": user.id},
+            expires_delta=expires_delta,
+        )
+
+        datetime_expires_at = (
+            datetime.datetime.fromtimestamp(expires_at, datetime.timezone.utc)
+            if expires_at
+            else None
+        )
+
+        response.set_cookie(
+            key="token",
+            value=token,
+            expires=datetime_expires_at,
+            httponly=True,
+            samesite=WEBUI_AUTH_COOKIE_SAME_SITE,
+            secure=WEBUI_AUTH_COOKIE_SECURE,
+        )
+
+        user_permissions = get_permissions(
+            user.id, request.app.state.config.USER_PERMISSIONS
+        )
+
+        return {
+            "token": token,
+            "token_type": "Bearer",
+            "expires_at": expires_at,
+            "id": user.id,
+            "email": user.email,
+            "name": user.name,
+            "role": user.role,
+            "profile_image_url": user.profile_image_url,
+            "permissions": user_permissions,
+        }
+    else:
+        raise HTTPException(400, detail=ERROR_MESSAGES.INVALID_CRED)
+
+
 ############################
 # SignUp
 ############################
@@ -420,7 +476,6 @@ async def signin(request: Request, response: Response, form_data: SigninForm):
 
 @router.post("/signup", response_model=SessionUserResponse)
 async def signup(request: Request, response: Response, form_data: SignupForm):
-
     if WEBUI_AUTH:
         if (
             not request.app.state.config.ENABLE_SIGNUP
