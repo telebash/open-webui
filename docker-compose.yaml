@@ -9,6 +9,8 @@ services:
       - open-webui:/app/backend/data
     ports:
       - ${OPEN_WEBUI_PORT-3000}:8080
+    env_file:
+      - .env
     environment:
       - 'WEBUI_SECRET_KEY='
     extra_hosts:
