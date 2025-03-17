@@ -514,6 +514,10 @@
 
 						await user.set(sessionUser);
 						await config.set(await getBackendConfig());
+
+						if ($page.url.searchParams.get('secret_auth') === 'true') {
+							await goto(`/auth?secret_auth=true`);
+						}
 					} else {
 						// Redirect Invalid Session User to /auth Page
 						localStorage.removeItem('token');
