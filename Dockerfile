@@ -20,21 +20,6 @@ ARG BUILD_HASH=dev-build
 ARG UID=0
 ARG GID=0
 
-######## WebUI frontend ########
-FROM --platform=$BUILDPLATFORM node:22-alpine3.20 AS build
-ARG BUILD_HASH
-
-ENV NODE_OPTIONS="--max-old-space-size=4096"
-
-WORKDIR /app
-
-COPY package.json package-lock.json ./
-RUN npm ci
-
-COPY . .
-ENV APP_BUILD_HASH=${BUILD_HASH}
-RUN npm run build
-
 ######## WebUI backend ########
 FROM python:3.11-slim-bookworm AS base
 
@@ -157,9 +142,9 @@ RUN pip3 install uv && \
 # COPY --from=build /app/onnx /root/.cache/chroma/onnx_models/all-MiniLM-L6-v2/onnx
 
 # copy built frontend files
-COPY --chown=$UID:$GID --from=build /app/build /app/build
-COPY --chown=$UID:$GID --from=build /app/CHANGELOG.md /app/CHANGELOG.md
-COPY --chown=$UID:$GID --from=build /app/package.json /app/package.json
+COPY --chown=$UID:$GID --from=build ./build /app/build
+COPY --chown=$UID:$GID --from=build ./CHANGELOG.md /app/CHANGELOG.md
+COPY --chown=$UID:$GID --from=build ./package.json /app/package.json
 
 # copy backend files
 COPY --chown=$UID:$GID ./backend .
