@@ -142,9 +142,9 @@ RUN pip3 install uv && \
 # COPY --from=build /app/onnx /root/.cache/chroma/onnx_models/all-MiniLM-L6-v2/onnx
 
 # copy built frontend files
-COPY --chown=$UID:$GID --from=build ./build /app/build
-COPY --chown=$UID:$GID --from=build ./CHANGELOG.md /app/CHANGELOG.md
-COPY --chown=$UID:$GID --from=build ./package.json /app/package.json
+COPY --chown=$UID:$GID ./build /app/build
+COPY --chown=$UID:$GID ./CHANGELOG.md /app/CHANGELOG.md
+COPY --chown=$UID:$GID ./package.json /app/package.json
 
 # copy backend files
 COPY --chown=$UID:$GID ./backend .
