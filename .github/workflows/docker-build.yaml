@@ -168,6 +168,25 @@ jobs:
     runs-on: ubuntu-latest
     needs: [merge-main-images]
     steps:
+      - name: Set repository name to lowercase
+        run: |
+          echo "IMAGE_NAME=${IMAGE_NAME,,}" >>${GITHUB_ENV}
+          echo "FULL_IMAGE_NAME=ghcr.io/${IMAGE_NAME,,}" >>${GITHUB_ENV}
+        env:
+          IMAGE_NAME: '${{ github.repository }}'
+
+      - name: Extract metadata for Docker images
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.FULL_IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+          flavor: |
+            latest=${{ github.ref == 'refs/heads/main' }}
+
       - name: Deploy to AWS EC2 using docker-compose
         uses: appleboy/ssh-action@v0.1.8
         with:
