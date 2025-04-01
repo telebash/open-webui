@@ -200,4 +200,4 @@ jobs:
             docker stop open-webui || true
             docker rm open-webui || true
 
-            docker run -d --restart always --name open-webui --env-file /home/ubuntu/.env -p 3000:8080 ${{ env.FULL_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+            docker run -d --restart always --name open-webui $(grep -v '^#' /home/ubuntu/.env | xargs -I{} echo "-e {}") -p 3000:8080 ${{ env.FULL_IMAGE_NAME }}:${{ steps.meta.outputs.version }}
