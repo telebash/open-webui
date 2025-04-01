@@ -160,7 +160,10 @@
 		loaded = true;
 		setLogoImage();
 
-		if (hasSecretAuth && (($config?.features.auth_trusted_header ?? false) || $config?.features.auth === false)) {
+		if (hasSecretAuth) {
+			onboarding = $config?.onboarding ?? false;
+		}
+		else if (($config?.features.auth_trusted_header ?? false) || $config?.features.auth === false) {
 			await signInHandler();
 		} else {
 			// onboarding = $config?.onboarding ?? false;
