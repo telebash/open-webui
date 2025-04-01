@@ -178,14 +178,14 @@
 							}}
 						/>
 					{:else}
-						<Controls
+						<!-- <Controls
 							on:close={() => {
 								showControls.set(false);
 							}}
 							{models}
 							bind:chatFiles
 							bind:params
-						/>
+						/> -->
 					{/if}
 				</div>
 			</Drawer>
@@ -265,14 +265,14 @@
 								}}
 							/>
 						{:else}
-							<Controls
+							<!-- <Controls
 								on:close={() => {
 									showControls.set(false);
 								}}
 								{models}
 								bind:chatFiles
 								bind:params
-							/>
+							/> -->
 						{/if}
 					</div>
 				</div>
