@@ -184,7 +184,13 @@
 						/>
 					</svg>
 				</div>
-				<div class=" self-center truncate">{$i18n.t('Sign Out')}</div>
+				<div class=" self-center truncate">
+					{
+						$user.name === 'Anonymous' && $user.email.endsWith('@freepass.ai')
+						? $i18n.t('Sign in')
+						: $i18n.t('Sign Out')
+					}
+				</div>
 			</button>
 
 			{#if $activeUserIds?.length > 0}
