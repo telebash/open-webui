@@ -575,8 +575,30 @@
 </script>
 
 <svelte:head>
-	<title>{$WEBUI_NAME}</title>
+	<title>Freepass AI: Free Access to Premium AI Models</title>
 	<link crossorigin="anonymous" rel="icon" href="{WEBUI_BASE_URL}/static/favicon.png" />
+
+	<!-- Primary Meta Tags -->
+	<meta charset="UTF-8" />
+	<meta name="description" content="Access GPT-4, Claude, and Gemini for FREE with Freepass AI. No subscriptions, no signup. Just instant, powerful AI at your fingertips." />
+	<meta name="keywords" content="Freepass AI, free AI, GPT-4, Claude, Gemini, AI chat, AI assistant, no signup AI, free AI tools" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+	<!-- Open Graph / Facebook Meta Tags -->	
+	<meta property="og:type" content="website" />
+	<meta property="og:url" content="https://freepass.ai/" />
+	<meta property="og:title" content="Freepass AI: Free Access to Premium AI Models" />
+	<meta property="og:description" content="Chat with GPT-4, Claude, and Gemini for FREE on Freepass AI. No signup needed. Experience the power of AI today!" />
+	<!-- Replace with your actual social preview image -->
+	<meta property="og:image" content="https://freepass.ai/static/images/social-preview.jpg">
+
+	<!-- Twitter Meta Tags -->
+	<meta name="twitter:card" content="summary_large_image" />
+	<meta name="twitter:url" content="https://freepass.ai/" />
+	<meta name="twitter:title" content="Freepass AI: Free Access to Premium AI Models" />
+	<meta name="twitter:description" content="Get instant access to GPT-4, Claude, and Gemini for FREE with Freepass AI! No signup required. Try it now!" />
+	<!-- Replace with your actual social preview image -->
+	<meta name="twitter:image" content="https://freepass.ai/static/images/social-preview.jpg" />
 
 	<!-- rosepine themes have been disabled as it's not up to date with our latest version. -->
 	<!-- feel free to make a PR to fix if anyone wants to see it return -->

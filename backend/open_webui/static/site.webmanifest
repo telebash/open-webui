@@ -1,6 +1,6 @@
 {
   "name": "Freepass AI",
-  "short_name": "WebUI",
+  "short_name": "Freepass AI",
   "icons": [
     {
       "src": "/static/web-app-manifest-192x192.png",

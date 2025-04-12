@@ -2,22 +2,28 @@
 	import { DropdownMenu } from 'bits-ui';
 	import { createEventDispatcher, getContext, onMount } from 'svelte';
 
-	import { flyAndScale } from '$lib/utils/transitions';
-	import { goto } from '$app/navigation';
 	import ArchiveBox from '$lib/components/icons/ArchiveBox.svelte';
+	import TermsOfUseModal from '$lib/components/TermsOfUseModal.svelte';
+	import PrivacyPolicyModal from '$lib/components/PrivacyPolicyModal.svelte';
 	import { showSettings, activeUserIds, USAGE_POOL, mobile, showSidebar, user } from '$lib/stores';
-	import { fade, slide } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 	import Tooltip from '$lib/components/common/Tooltip.svelte';
 	import { userSignOut } from '$lib/apis/auths';
 
 	const i18n = getContext('i18n');
 
 	export let show = false;
+	let showTermsModal = false;
+	let showPrivacyPolicyModal = false;
+
 	export let role = '';
 	export let className = 'max-w-[240px]';
 
 	const dispatch = createEventDispatcher();
 </script>
+
+<TermsOfUseModal bind:show={showTermsModal} />
+<PrivacyPolicyModal bind:show={showPrivacyPolicyModal} />
 
 <DropdownMenu.Root
 	bind:open={show}
@@ -150,6 +156,58 @@
 					<div class=" self-center truncate">{$i18n.t('Admin Panel')}</div>
 				</a>
 			{/if}
+
+			<hr class=" border-gray-100 dark:border-gray-850 my-1 p-0" />
+
+			<button
+				class="flex rounded-md py-2 px-3 w-full hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+				on:click={() => {
+					showTermsModal = true;
+				}}
+			>
+				<div class="self-center mr-3">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="w-5 h-5"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+						/>
+					</svg>
+				</div>
+				<div class="self-center truncate">{$i18n.t('Terms of Use')}</div>
+			</button>
+
+			<button
+				class="flex rounded-md py-2 px-3 w-full hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+				on:click={() => {
+					showPrivacyPolicyModal = true;
+				}}
+			>
+				<div class="self-center mr-3">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						fill="none"
+						viewBox="0 0 24 24"
+						stroke-width="1.5"
+						stroke="currentColor"
+						class="w-5 h-5"
+					>
+						<path
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"
+						/>
+					</svg>
+				</div>
+				<div class="self-center truncate">{$i18n.t('Privacy Policy')}</div>
+			</button>
 
 			<hr class=" border-gray-100 dark:border-gray-850 my-1 p-0" />
 
